@@ -1,102 +1,48 @@
-🧠 Memory Tester
+# Memory Tester 🧠
 
-An interactive, browser-based cognitive assessment and memory training suite.
+> A lightweight, client-side cognitive testing suite to measure spatial memory, working memory, and verbal recall.
 
-Memory Tester is a lightweight, privacy-focused web application designed to benchmark and train various aspects of human memory—including working memory, spatial sequence recall, pattern recognition, and verbal retention.
+🔗 **Live Demo:** [https://salivity.github.io/memory-tester](https://salivity.github.io/memory-tester)
 
-🌐 Live Demo: https://salivity.github.io/memory-tester
+---
 
-✨ Features & Mini-Tests
+## Overview
 
-Memory Tester includes 5 benchmark cognitive mini-tests based on classic psychological and scientific tasks:
+**Memory Tester** is a standalone, browser-based cognitive test app designed to evaluate different aspects of human memory. It is built entirely in vanilla HTML5, CSS (Tailwind), and JavaScript with zero build steps or external dependencies.
 
-Test Name
+Whether you want to train your working memory, test your spatial recall against chimpanzee benchmarks, or run a full cognitive evaluation, all tests run locally in your browser.
 
-Cognitive Focus
+---
 
-Description
+## Included Tests
 
-🐵 Chimp Test
+| Test | Cognitive Domain | Description |
+| :--- | :--- | :--- |
+| **Chimp Test** | Spatial & Working Memory | Click numbers in ascending sequence after they turn hidden. Based on working memory experiments with primates. |
+| **Matrix Recall** | Visual-Spatial Memory | Memorize and reproduce illuminated patterns on expanding grids ($3 \times 3$ up to $5 \times 5$). |
+| **Verbal Memory** | Verbal Working Memory | Determine if a word presented on screen is **NEW** or has already been **SEEN** in the session. |
+| **Digit Span** | Short-Term Capacity | Remember sequences of numbers in **Forward** or **Reverse** order based on Miller's $7 \pm 2$ capacity model. |
+| **Card Matching** | Associative Memory & Speed | Match pairs of hidden symbols on a card grid in the fewest moves and fastest time. |
+| **Full Assessment** | Composite Benchmark | A structured multi-test battery that calculates an overall **Cognitive Memory Index** ($0 - 1000$) and estimated brain age. |
 
-Spatial Sequence
+---
 
-Numbers briefly appear on a grid and flip hidden. Click them in ascending order ($1 \to 2 \to 3 \dots$).
+## Key Features
 
-🧩 Matrix Pattern
+* **Zero Frameworks / Zero Build Tools:** Single-file architecture using native browser APIs.
+* **Hash-Based Routing:** Seamless navigation (`#dashboard`, `#chimp`, `#matrix`, `#verbal`, `#digit`, `#cards`, `#assessment`, `#scores`) without page reloads.
+* **Web Audio Synthesis:** Sound effects generated dynamically using the Web Audio API—no external audio files required.
+* **Local Persistence:** Personal bests and high scores save automatically to your browser's `localStorage`.
+* **Privacy Focused:** 100% client-side. No user data, scores, or telemetry leave your device.
+* **Responsive Design:** Optimized for mobile phones, tablets, and desktop displays.
 
-Visual-Spatial
+---
 
-Memorize and replicate illuminated tile patterns as grid sizes expand.
+## Quick Start & Local Setup
 
-🗣️ Verbal Memory
+Because Memory Tester has no build steps or dependencies, running it locally requires no installation:
 
-Verbal Recognition
-
-Identify words as either SEEN before in the current session or brand NEW.
-
-🔢 Digit Span
-
-Working Memory
-
-Memorize sequences of numbers and recall them in forward or reverse order.
-
-🎴 Card Pair Match
-
-Visual Matching
-
-Flip cards to match pairs, testing visual mapping, speed, and accuracy.
-
-⚡ Full Assessment Battery
-
-Want a complete evaluation? Take the Full Assessment to complete 3 test modules back-to-back. At the end, you'll receive:
-
-An Overall Memory Index score (out of 1000)
-
-An estimated Brain Age Benchmark
-
-A breakdown of strengths across spatial, verbal, and working memory performance.
-
-🛠️ Technology Stack
-
-HTML5 & Vanilla JavaScript (ES6+) – Single-page architecture with URL hash routing (#dashboard, #tests, #assessment, #scores).
-
-Tailwind CSS – Modern, responsive dark-mode styling.
-
-Lucide Icons – Clean SVG icon system.
-
-Web Audio API – Built-in sound synthesizer generating audio cues without external assets.
-
-Local Storage API – Saves high scores locally on your device.
-
-🔒 Privacy & Offline Support
-
-100% Client-Side: No server tracking, analytics, or external database calls.
-
-Your Data Stays Local: High scores are stored solely in your browser's localStorage.
-
-Zero Dependencies Build: Runs directly in any web browser without needing npm install or compilation scripts.
-
-🚀 How to Host on GitHub Pages
-
-Fork or Upload this repository to GitHub.
-
-Go to Settings $\to$ Pages in your repository.
-
-Under Source, choose Deploy from a branch.
-
-Select the main branch and / (root) directory, then click Save.
-
-Your site will be live at https://salivity.github.io/memory-tester within a few minutes!
-
-💻 Local Development
-
-No build tools or node modules required! Simply clone the repository and open index.html in any modern browser:
-
-git clone https://github.com/salivity/memory-tester.git
-cd memory-tester
-# Open index.html in your browser
-
-
-📜 License
-
-Distributed under the MIT License. See LICENSE for more information.
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/salivity/memory-tester.git](https://github.com/salivity/memory-tester.git)
+   cd memory-tester
