@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Tester - Salivity</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons Library -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Custom scrollbar and subtle transitions */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+    .game-card-hover { transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
+    .game-card-hover:hover { transform: translateY(-3px); }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
+
+  <!-- HEADER -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="#dashboard" class="flex items-center gap-2.5 group">
+        <div class="p-2 rounded-xl bg-gradient-to-tr from-indigo-500 to-cyan-400 text-white shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+          <i data-lucide="brain" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-lg leading-none bg-gradient-to-r from-white via-slate-200 to-indigo-200 bg-clip-text text-transparent">
+            Memory Tester
+          </h1>
+          <p class="text-xs text-slate-400 mt-0.5">Cognitive Assessment & Training</p>
+        </div>
+      </a>
+
+      <div class="flex items-center gap-2">
+        <button id="audio-toggle-btn" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700/60 text-slate-300 transition" title="Toggle Sound">
+          <i id="audio-icon" data-lucide="volume-2" class="w-5 h-5 text-indigo-400"></i>
+        </button>
+        
+        <a id="exit-game-btn" href="#dashboard" class="hidden flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium border border-slate-700 text-slate-200 transition">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i> Exit Game
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN VIEW CONTAINER -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-6 flex flex-col">
+    <!-- NAVIGATION TABS -->
+    <nav id="app-nav" class="flex items-center gap-2 mb-6 border-b border-slate-800 pb-3 overflow-x-auto">
+      <a href="#dashboard" id="nav-dashboard" class="nav-tab flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition whitespace-nowrap bg-indigo-600 text-white shadow-lg shadow-indigo-600/25">
+        <i data-lucide="bar-chart-3" class="w-4 h-4"></i> Dashboard
+      </a>
+      <a href="#tests" id="nav-tests" class="nav-tab flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition whitespace-nowrap bg-slate-900/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800">
+        <i data-lucide="grid" class="w-4 h-4"></i> Mini Tests
+      </a>
+      <a href="#assessment" id="nav-assessment" class="nav-tab flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition whitespace-nowrap bg-slate-900/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800">
+        <i data-lucide="zap" class="w-4 h-4"></i> Full Assessment
+      </a>
+      <a href="#scores" id="nav-scores" class="nav-tab flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition whitespace-nowrap bg-slate-900/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800">
+        <i data-lucide="trophy" class="w-4 h-4"></i> High Scores
+      </a>
+    </nav>
+
+    <!-- VIEW: DASHBOARD -->
+    <section id="view-dashboard" class="view-section space-y-6">
+      <!-- HERO BANNER -->
+      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-900/60 via-slate-900 to-slate-900 border border-indigo-500/20 p-6 sm:p-8">
+        <div class="relative z-10 max-w-2xl space-y-4">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-semibold uppercase tracking-wider">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Brain Fitness Suite
+          </div>
+          <h2 class="text-2xl sm:text-4xl font-extrabold text-white leading-tight">
+            Challenge & Expand Your Memory Capacity
+          </h2>
+          <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+            Test working memory, spatial awareness, verbal retention, and sequence speed with standard cognitive benchmarks.
+          </p>
+          <div class="flex flex-wrap gap-3 pt-2">
+            <a href="#assessment" class="flex items-center gap-2 px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-semibold text-white shadow-lg shadow-indigo-600/30 transition hover:scale-[1.02]">
+              <i data-lucide="zap" class="w-5 h-5 fill-current"></i> Start Full Assessment
+            </a>
+            <a href="#tests" class="flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 font-semibold text-slate-200 border border-slate-700 transition">
+              Browse 5 Mini-Tests
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUICK STATS SUMMARY -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-medium text-slate-400">Tests Attempted</span>
+            <i data-lucide="target" class="w-4 h-4 text-indigo-400"></i>
+          </div>
+          <div>
+            <div id="stat-attempted" class="text-xl sm:text-2xl font-black text-white">0 / 5</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">Mini-tests unlocked</div>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-medium text-slate-400">Chimp Span</span>
+            <i data-lucide="hash" class="w-4 h-4 text-amber-400"></i>
+          </div>
+          <div>
+            <div id="stat-chimp" class="text-xl sm:text-2xl font-black text-white">—</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">Max numbers recalled</div>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-medium text-slate-400">Digit Span</span>
+            <i data-lucide="type" class="w-4 h-4 text-emerald-400"></i>
+          </div>
+          <div>
+            <div id="stat-digit" class="text-xl sm:text-2xl font-black text-white">—</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">Short-term memory</div>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-medium text-slate-400">Overall Index</span>
+            <i data-lucide="award" class="w-4 h-4 text-cyan-400"></i>
+          </div>
+          <div>
+            <div id="stat-index" class="text-xl sm:text-2xl font-black text-white">—</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">Cognitive Score</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEATURED TESTS GRID -->
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i data-lucide="grid" class="w-5 h-5 text-indigo-400"></i> Popular Memory Tests
+          </h3>
+          <a href="#tests" class="text-xs text-indigo-400 hover:underline">View All &rarr;</a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <a href="#chimp" class="game-card-hover block rounded-2xl bg-slate-900 border border-amber-500/30 p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700/60">Spatial</span>
+              <div class="p-2 rounded-xl bg-slate-800 text-slate-200">
+                <i data-lucide="hash" class="w-5 h-5"></i>
+              </div>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-1.5">Chimp Test</h3>
+            <p class="text-slate-400 text-xs leading-relaxed mb-4">Click numbers in order after they flip hidden. Tests spatial visual memory.</p>
+            <div class="flex items-center justify-between pt-3 border-t border-slate-800/80 text-xs">
+              <span class="text-slate-500">Best Record:</span>
+              <span id="dash-score-chimp" class="font-semibold text-slate-200">Not tested</span>
+            </div>
+          </a>
+
+          <a href="#matrix" class="game-card-hover block rounded-2xl bg-slate-900 border border-indigo-500/30 p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700/60">Pattern</span>
+              <div class="p-2 rounded-xl bg-slate-800 text-slate-200">
+                <i data-lucide="grid" class="w-5 h-5"></i>
+              </div>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-1.5">Matrix Memory</h3>
+            <p class="text-slate-400 text-xs leading-relaxed mb-4">Memorize & replicate highlighted tiles on a dynamic grid.</p>
+            <div class="flex items-center justify-between pt-3 border-t border-slate-800/80 text-xs">
+              <span class="text-slate-500">Best Record:</span>
+              <span id="dash-score-matrix" class="font-semibold text-slate-200">Not tested</span>
+            </div>
+          </a>
+
+          <a href="#verbal" class="game-card-hover block rounded-2xl bg-slate-900 border border-emerald-500/30 p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700/60">Working</span>
+              <div class="p-2 rounded-xl bg-slate-800 text-slate-200">
+                <i data-lucide="type" class="w-5 h-5"></i>
+              </div>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-1.5">Verbal Memory</h3>
+            <p class="text-slate-400 text-xs leading-relaxed mb-4">Keep track of words you have seen before vs new words.</p>
+            <div class="flex items-center justify-between pt-3 border-t border-slate-800/80 text-xs">
+              <span class="text-slate-500">Best Record:</span>
+              <span id="dash-score-verbal" class="font-semibold text-slate-200">Not tested</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW: MINI TESTS CATALOG -->
+    <section id="view-tests" class="view-section hidden space-y-6">
+      <div>
+        <h2 class="text-2xl font-bold text-white">Mini Memory Tests</h2>
+        <p class="text-slate-400 text-sm">Select a specific cognitive area to test and train.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <a href="#chimp" class="game-card-hover block rounded-2xl bg-slate-900 border border-amber-500/30 p-5">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700/60">Spatial Sequence</span>
+            <div class="p-2 rounded-xl bg-slate-800 text-slate-200"><i data-lucide="hash" class="w-5 h-5"></i></div>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-1.5">Chimp Test</h3>
+          <p class="text-slate-400 text-xs leading-relaxed mb-4">Numerical sequence recall. Numbers briefly appear on a grid then hide. Can you click them in ascending order?</p>
+          <div class="flex items-center justify-between pt-3 border-t border-slate-800/80 text-xs">
+            <span class="text-slate-500">Best Record:</span>
+            <span id="test-score-chimp" class="font-semibold text-slate-200">Not tested</span>
+          </div>
+        </a>
+
+        <a href="#matrix" class="game-card-hover block rounded-2xl bg-slate-900 border border-indigo-500/30 p-5">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700/60">Visual Spatial</span>
+            <div class="p-2 rounded-xl bg-slate-800 text-slate-200"><i data-lucide="grid" class="w-5 h-5"></i></div>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-1.5">Matrix Pattern Memory</h3>
+          <p class="text-slate-400 text-xs leading-relaxed mb-4">Grid tiles light up for a brief moment. Recall exact tile locations as grid size and pattern complexity expand.</p>
+          <div class="flex items-center justify-between pt-3 border-t border-slate-800/80 text-xs">
+            <span class="text-slate-500">Best Record:</span>
+            <span id="test-score-matrix" class="font-semibold text-slate-200">Not tested</span>
+          </div>
+        </a>
+
+        <a href="#verbal" class="game-card-hover block rounded-2xl bg-slate-900 border border-emerald-500/30 p-5">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700/60">Verbal Recognition</span>
+            <div class="p-2 rounded-xl bg-slate-800 text-slate-200"><i data-lucide="type" class="w-5 h-5"></i></div>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-1.5">Verbal Memory</h3>
+          <p class="text-slate-400 text-xs leading-relaxed mb-4">Words are shown one by one. Indicate whether you have already seen the word in this session or if it is brand new.</p>
+          <div class="flex items-center justify-between pt-3 border-t border-slate-800/80 text-xs">
+            <span class="text-slate-500">Best Record:</span>
+            <span id="test-score-verbal" class="font-semibold text-slate-200">Not tested</span>
+          </div>
+        </a>
+
+        <a href="#digit" class="game-card-hover block rounded-2xl bg-slate-900 border border-cyan-500/30 p-5">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700/60">Working Memory</span>
+            <div class="p-2 rounded-xl bg-slate-800 text-slate-200"><i data-lucide="zap" class="w-5 h-5"></i></div>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-1.5">Digit Span Test</h3>
+          <p class="text-slate-400 text-xs leading-relaxed mb-4">Memorize increasingly long numerical sequences. Features both Forward and Reverse recall modes.</p>
+          <div class="flex items-center justify-between pt-3 border-t border-slate-800/80 text-xs">
+            <span class="text-slate-500">Best Record:</span>
+            <span id="test-score-digit" class="font-semibold text-slate-200">Not tested</span>
+          </div>
+        </a>
+
+        <a href="#cards" class="game-card-hover block rounded-2xl bg-slate-900 border border-pink-500/30 p-5">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700/60">Visual Matching</span>
+            <div class="p-2 rounded-xl bg-slate-800 text-slate-200"><i data-lucide="layers" class="w-5 h-5"></i></div>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-1.5">Card Pair Matching</h3>
+          <p class="text-slate-400 text-xs leading-relaxed mb-4">Flip and pair symbols on a card grid. Tests spatial mapping, speed, and concentration efficiency.</p>
+          <div class="flex items-center justify-between pt-3 border-t border-slate-800/80 text-xs">
+            <span class="text-slate-500">Best Record:</span>
+            <span id="test-score-cards" class="font-semibold text-slate-200">Not tested</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- VIEW: FULL ASSESSMENT BATTERY -->
+    <section id="view-assessment" class="view-section hidden max-w-3xl mx-auto w-full space-y-6">
+      <div id="assessment-intro" class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6 text-center">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-500 to-cyan-400 text-white flex items-center justify-center mx-auto shadow-xl shadow-indigo-500/20">
+          <i data-lucide="zap" class="w-8 h-8 fill-current"></i>
+        </div>
+
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Full Memory Assessment</h2>
+          <p class="text-slate-300 text-sm mt-2 max-w-lg mx-auto">
+            Take a structured 3-part test battery measuring visual-spatial memory, verbal recognition, and working digit span.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 text-left">
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+            <span class="text-xs font-semibold text-indigo-400 block mb-1">Part 1</span>
+            <h4 class="font-bold text-white text-sm">Matrix Pattern</h4>
+            <p class="text-[11px] text-slate-400 mt-1">Spatial memory grid</p>
+          </div>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+            <span class="text-xs font-semibold text-emerald-400 block mb-1">Part 2</span>
+            <h4 class="font-bold text-white text-sm">Verbal Recognition</h4>
+            <p class="text-[11px] text-slate-400 mt-1">Word memory span</p>
+          </div>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+            <span class="text-xs font-semibold text-cyan-400 block mb-1">Part 3</span>
+            <h4 class="font-bold text-white text-sm">Digit Span</h4>
+            <p class="text-[11px] text-slate-400 mt-1">Numerical capacity</p>
+          </div>
+        </div>
+
+        <button id="btn-start-assessment" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-white shadow-lg shadow-indigo-600/30 transition">
+          Begin Assessment
+        </button>
+      </div>
+
+      <!-- STEP CONTAINERS -->
+      <div id="assessment-active-area" class="hidden space-y-4">
+        <div class="bg-slate-900 border border-slate-800 px-4 py-2.5 rounded-xl flex items-center justify-between text-xs">
+          <span id="assessment-step-label" class="font-bold text-indigo-400">Step 1 of 3: Matrix Pattern</span>
+          <span class="text-slate-400">Battery Assessment</span>
+        </div>
+        <div id="assessment-game-host"></div>
+      </div>
+
+      <!-- RESULTS SCREEN -->
+      <div id="assessment-results" class="hidden bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6">
+        <div class="text-center space-y-2">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
+            <i data-lucide="check-circle-2" class="w-4 h-4"></i> Assessment Completed
+          </div>
+          <h2 class="text-3xl font-extrabold text-white">Cognitive Performance Profile</h2>
+          <p class="text-slate-400 text-xs">Here is your consolidated memory index benchmark.</p>
+        </div>
+
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 text-center space-y-2">
+          <div class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Memory Performance Score</div>
+          <div class="text-5xl font-black bg-gradient-to-r from-indigo-400 via-cyan-300 to-emerald-400 bg-clip-text text-transparent">
+            <span id="res-overall-index">0</span> <span class="text-lg font-bold text-slate-500">/ 1000</span>
+          </div>
+          <p class="text-xs text-slate-400">
+            Estimated Brain Age Benchmark: <span id="res-brain-age" class="text-indigo-300 font-bold">25 years</span>
+          </p>
+        </div>
+
+        <div class="space-y-3">
+          <h4 class="text-sm font-bold text-white">Sub-test Breakdown</h4>
+          
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs">
+              <span class="text-slate-300 font-medium">Spatial Pattern Recall</span>
+              <span id="res-matrix-score" class="text-slate-400 font-bold">0 / 12 lvl</span>
+            </div>
+            <div class="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-800">
+              <div id="res-matrix-bar" class="h-full bg-indigo-500 transition-all duration-500 rounded-full" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs">
+              <span class="text-slate-300 font-medium">Verbal Word Recognition</span>
+              <span id="res-verbal-score" class="text-slate-400 font-bold">0 / 40 pts</span>
+            </div>
+            <div class="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-800">
+              <div id="res-verbal-bar" class="h-full bg-emerald-500 transition-all duration-500 rounded-full" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs">
+              <span class="text-slate-300 font-medium">Working Digit Span</span>
+              <span id="res-digit-score" class="text-slate-400 font-bold">0 / 10 digits</span>
+            </div>
+            <div class="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-800">
+              <div id="res-digit-bar" class="h-full bg-cyan-500 transition-all duration-500 rounded-full" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-3 pt-2">
+          <button id="btn-retake-assessment" class="flex-1 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 font-bold text-slate-200 border border-slate-700 transition flex items-center justify-center gap-2">
+            <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Retake Test
+          </button>
+          <a href="#dashboard" class="flex-1 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-white text-center shadow-lg shadow-indigo-600/30 transition">
+            Return Home
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW: HIGH SCORES -->
+    <section id="view-scores" class="view-section hidden max-w-3xl mx-auto w-full space-y-6">
+      <div>
+        <h2 class="text-2xl font-bold text-white">Personal Best Records</h2>
+        <p class="text-slate-400 text-sm">All achievements saved locally on your device.</p>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden divide-y divide-slate-800/80">
+        <div class="p-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="p-2 rounded-xl bg-slate-800 border border-slate-700/60"><i data-lucide="hash" class="w-5 h-5 text-amber-400"></i></div>
+            <span class="font-semibold text-white text-sm">Chimp Sequence Test</span>
+          </div>
+          <div class="text-right"><span id="score-chimp" class="text-lg font-black text-white">0</span> <span class="text-xs text-slate-500">items</span></div>
+        </div>
+
+        <div class="p-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="p-2 rounded-xl bg-slate-800 border border-slate-700/60"><i data-lucide="grid" class="w-5 h-5 text-indigo-400"></i></div>
+            <span class="font-semibold text-white text-sm">Matrix Pattern Memory</span>
+          </div>
+          <div class="text-right"><span id="score-matrix" class="text-lg font-black text-white">0</span> <span class="text-xs text-slate-500">level</span></div>
+        </div>
+
+        <div class="p-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="p-2 rounded-xl bg-slate-800 border border-slate-700/60"><i data-lucide="type" class="w-5 h-5 text-emerald-400"></i></div>
+            <span class="font-semibold text-white text-sm">Verbal Word Recognition</span>
+          </div>
+          <div class="text-right"><span id="score-verbal" class="text-lg font-black text-white">0</span> <span class="text-xs text-slate-500">points</span></div>
+        </div>
+
+        <div class="p-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="p-2 rounded-xl bg-slate-800 border border-slate-700/60"><i data-lucide="zap" class="w-5 h-5 text-cyan-400"></i></div>
+            <span class="font-semibold text-white text-sm">Digit Memory Span</span>
+          </div>
+          <div class="text-right"><span id="score-digit" class="text-lg font-black text-white">0</span> <span class="text-xs text-slate-500">digits</span></div>
+        </div>
+
+        <div class="p-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="p-2 rounded-xl bg-slate-800 border border-slate-700/60"><i data-lucide="layers" class="w-5 h-5 text-pink-400"></i></div>
+            <span class="font-semibold text-white text-sm">Card Pair Matching</span>
+          </div>
+          <div class="text-right"><span id="score-cards" class="text-lg font-black text-white">0</span> <span class="text-xs text-slate-500">points</span></div>
+        </div>
+
+        <div class="p-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="p-2 rounded-xl bg-slate-800 border border-slate-700/60"><i data-lucide="award" class="w-5 h-5 text-yellow-400"></i></div>
+            <span class="font-semibold text-white text-sm">Battery Assessment Score</span>
+          </div>
+          <div class="text-right"><span id="score-batteryIndex" class="text-lg font-black text-white">0</span> <span class="text-xs text-slate-500">index pts</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GAME CONTAINERS -->
+    <section id="view-game-container" class="view-section hidden max-w-xl mx-auto w-full">
+      <div id="game-mount-point"></div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-800/80 bg-slate-900/40 py-4 text-center text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+      <span>Memory Tester Cognitive Lab &bull; Visual, Spatial & Working Memory Tests</span>
+      <span>Scientific test adaptations (Chimp Test, Digit Span & Matrix Pattern)</span>
+    </div>
+  </footer>
+
+  <script>
+    // --- WORD BANK FOR VERBAL MEMORY ---
+    const WORD_BANK = [
+      "Apple", "Anchor", "Breeze", "Bridge", "Camera", "Castle", "Dragon", "Doctor",
+      "Engine", "Eagle", "Forest", "Feather", "Galaxy", "Guitar", "Harbor", "Hammer",
+      "Island", "Insect", "Jungle", "Jacket", "Kettle", "Knight", "Lantern", "Lemon",
+      "Magnet", "Mirror", "Needle", "Nature", "Ocean", "Orange", "Planet", "Pencil",
+      "Quartz", "Queen", "Rocket", "River", "Silver", "Shadow", "Tunnel", "Tiger",
+      "Umbrella", "Unicorn", "Valley", "Volcano", "Window", "Wizard", "Xylophone",
+      "Yacht", "Yellow", "Zebra", "Zipper", "Antenna", "Balloon", "Cactus", "Diamond",
+      "Emerald", "Falcon", "Glacier", "Helmet", "Iceberg", "Javelin", "Kangaroo",
+      "Lighthouse", "Mountain", "Notebook", "Octopus", "Pyramid", "Quiver", "Radar",
+      "Sculpture", "Telescope", "Uranium", "Violin", "Waterfall", "X-Ray", "Yarn",
+      "Zucchini", "Architect", "Blizzard", "Compass", "Dolphin", "Eclipse", "Fossil",
+      "Giraffe", "Harvest", "Igloo", "Jellyfish", "Keyhole", "Labyrinth", "Meteor", "Nebula"
+    ];
+
+    // --- SOUND SYNTHESIZER ---
+    let soundEnabled = true;
+    function playSound(type) {
+      if (!soundEnabled) return;
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+
+        if (type === 'correct') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(659.25, ctx.currentTime + 0.1);
+          gain.gain.setValueAtTime(0.15, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.25);
+        } else if (type === 'wrong') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(180, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 0.2);
+          gain.gain.setValueAtTime(0.2, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.3);
+        } else if (type === 'click') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(400, ctx.currentTime);
+          gain.gain.setValueAtTime(0.08, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.05);
+        } else if (type === 'win') {
+          const notes = [523.25, 659.25, 783.99, 1046.50];
+          notes.forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.12, ctx.currentTime + i * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.08 + 0.2);
+            osc.start(ctx.currentTime + i * 0.08);
+            osc.stop(ctx.currentTime + i * 0.08 + 0.22);
+          });
+        }
+      } catch (e) {}
+    }
+
+    // --- HIGH SCORES STATE ---
+    let highScores = {
+      chimp: 0,
+      matrix: 0,
+      verbal: 0,
+      digit: 0,
+      cards: 0,
+      batteryIndex: 0
+    };
+
+    function loadHighScores() {
+      try {
+        const saved = localStorage.getItem('memory_tester_scores');
+        if (saved) highScores = { ...highScores, ...JSON.parse(saved) };
+      } catch (e) {}
+      updateScoreDisplays();
+    }
+
+    function saveHighScore(game, score) {
+      if (score > (highScores[game] || 0)) {
+        highScores[game] = score;
+        try {
+          localStorage.setItem('memory_tester_scores', JSON.stringify(highScores));
+        } catch (e) {}
+        updateScoreDisplays();
+      }
+    }
+
+    function updateScoreDisplays() {
+      const attempted = Object.keys(highScores).filter(k => k !== 'batteryIndex' && highScores[k] > 0).length;
+      
+      const setTxt = (id, txt) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = txt;
+      };
+
+      setTxt('stat-attempted', `${attempted} / 5`);
+      setTxt('stat-chimp', highScores.chimp ? `${highScores.chimp} items` : '—');
+      setTxt('stat-digit', highScores.digit ? `${highScores.digit} digits` : '—');
+      setTxt('stat-index', highScores.batteryIndex ? `${highScores.batteryIndex} pts` : '—');
+
+      setTxt('dash-score-chimp', highScores.chimp ? `${highScores.chimp} items` : 'Not tested');
+      setTxt('dash-score-matrix', highScores.matrix ? `Level ${highScores.matrix}` : 'Not tested');
+      setTxt('dash-score-verbal', highScores.verbal ? `${highScores.verbal} pts` : 'Not tested');
+
+      setTxt('test-score-chimp', highScores.chimp ? `${highScores.chimp} items` : 'Not tested');
+      setTxt('test-score-matrix', highScores.matrix ? `Level ${highScores.matrix}` : 'Not tested');
+      setTxt('test-score-verbal', highScores.verbal ? `${highScores.verbal} pts` : 'Not tested');
+      setTxt('test-score-digit', highScores.digit ? `${highScores.digit} digits` : 'Not tested');
+      setTxt('test-score-cards', highScores.cards ? `${highScores.cards} pts` : 'Not tested');
+
+      setTxt('score-chimp', highScores.chimp || 0);
+      setTxt('score-matrix', highScores.matrix || 0);
+      setTxt('score-verbal', highScores.verbal || 0);
+      setTxt('score-digit', highScores.digit || 0);
+      setTxt('score-cards', highScores.cards || 0);
+      setTxt('score-batteryIndex', highScores.batteryIndex || 0);
+    }
+
+    // --- STREAMING_CHUNK:Implementing URL Hash Router and Navigation... ---
+    function handleRouting() {
+      const hash = window.location.hash.toLowerCase() || '#dashboard';
+      
+      // Hide all main view sections
+      document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+
+      // Update Nav Tabs visual state
+      document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.className = "nav-tab flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition whitespace-nowrap bg-slate-900/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800";
+      });
+
+      const exitBtn = document.getElementById('exit-game-btn');
+      const activeNavTab = document.getElementById(`nav-${hash.replace('#', '')}`);
+
+      if (activeNavTab) {
+        activeNavTab.className = "nav-tab flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition whitespace-nowrap bg-indigo-600 text-white shadow-lg shadow-indigo-600/25";
+      }
+
+      if (['#dashboard', '#tests', '#assessment', '#scores'].includes(hash)) {
+        exitBtn.classList.add('hidden');
+        const activeView = document.getElementById(`view-${hash.replace('#', '')}`);
+        if (activeView) activeView.classList.remove('hidden');
+        if (hash === '#assessment') initAssessmentView();
+      } else {
+        // Individual Game Route
+        exitBtn.classList.remove('hidden');
+        const gameContainer = document.getElementById('view-game-container');
+        gameContainer.classList.remove('hidden');
+        mountGame(hash.replace('#', ''));
+      }
+      
+      lucide.createIcons();
+    }
+
+    // --- STREAMING_CHUNK:Implementing Chimp Test Game Logic... ---
+    function mountChimpGame(hostEl, onFinishCb) {
+      let level = 4;
+      let strikes = 0;
+      let grid = [];
+      let nextExpected = 1;
+      let numbersHidden = false;
+      let gameState = 'ready'; // ready | playing | failed | gameover
+      const GRID_SIZE = 5;
+
+      function render() {
+        if (gameState === 'ready') {
+          hostEl.innerHTML = `
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-6 text-center">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div>
+                  <h3 class="font-bold text-white text-lg flex items-center gap-2">
+                    <i data-lucide="hash" class="w-5 h-5 text-amber-400"></i> Chimp Test
+                  </h3>
+                  <p class="text-xs text-slate-400">Click tiles in ascending numerical order.</p>
+                </div>
+                <div class="flex items-center gap-4 text-xs">
+                  <div><span class="text-slate-500 block">Items</span><span class="font-bold text-amber-400 text-sm">${level}</span></div>
+                  <div><span class="text-slate-500 block">Strikes</span><span class="font-bold text-rose-400 text-sm">${strikes} / 3</span></div>
+                </div>
+              </div>
+              <div class="py-8 space-y-4">
+                <p class="text-slate-300 text-sm max-w-sm mx-auto">
+                  Numbers will be shown on the grid. As soon as you click <strong class="text-amber-400">1</strong>, the rest turn hidden. Memorize their positions!
+                </p>
+                <button id="chimp-start-btn" class="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 font-bold text-slate-950 transition">
+                  Start Round
+                </button>
+              </div>
+            </div>
+          `;
+          document.getElementById('chimp-start-btn').onclick = () => startRound(level);
+        } else if (gameState === 'playing' || gameState === 'failed') {
+          let gridHtml = grid.map((val, idx) => {
+            const isRevealed = val !== null && val < nextExpected;
+            let btnClass = 'bg-slate-950 border border-slate-800/40 cursor-default';
+            if (val !== null) {
+              if (isRevealed) btnClass = 'bg-slate-800 text-slate-600 cursor-default';
+              else if (!numbersHidden || val === 1) btnClass = 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 hover:scale-105';
+              else btnClass = 'bg-indigo-600 hover:bg-indigo-500 text-transparent shadow-md';
+            }
+            const displayVal = val !== null && (!numbersHidden || isRevealed || val === 1) ? val : '';
+            return `<button data-idx="${idx}" ${val === null || isRevealed ? 'disabled' : ''} class="chimp-tile rounded-xl font-bold text-lg transition flex items-center justify-center aspect-square ${btnClass}">${displayVal}</button>`;
+          }).join('');
+
+          hostEl.innerHTML = `
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-6 text-center">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div>
+                  <h3 class="font-bold text-white text-lg flex items-center gap-2">
+                    <i data-lucide="hash" class="w-5 h-5 text-amber-400"></i> Chimp Test
+                  </h3>
+                  <p class="text-xs text-slate-400">Click tiles in ascending numerical order.</p>
+                </div>
+                <div class="flex items-center gap-4 text-xs">
+                  <div><span class="text-slate-500 block">Items</span><span class="font-bold text-amber-400 text-sm">${level}</span></div>
+                  <div><span class="text-slate-500 block">Strikes</span><span class="font-bold text-rose-400 text-sm">${strikes} / 3</span></div>
+                </div>
+              </div>
+              <div class="grid grid-cols-5 gap-2 max-w-md mx-auto aspect-square">${gridHtml}</div>
+              ${gameState === 'failed' ? `
+                <div class="p-4 bg-rose-500/10 border border-rose-500/30 rounded-2xl space-y-2">
+                  <p class="text-rose-300 text-sm font-semibold">Mistake! Strikes: ${strikes}/3</p>
+                  <button id="chimp-retry-btn" class="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-xs font-bold text-white">Retry Level ${level}</button>
+                </div>
+              ` : ''}
+            </div>
+          `;
+
+          document.querySelectorAll('.chimp-tile').forEach(btn => {
+            btn.onclick = () => {
+              const idx = parseInt(btn.getAttribute('data-idx'));
+              handleTileClick(grid[idx]);
+            };
+          });
+
+          if (document.getElementById('chimp-retry-btn')) {
+            document.getElementById('chimp-retry-btn').onclick = () => startRound(level);
+          }
+        } else if (gameState === 'gameover') {
+          hostEl.innerHTML = `
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-6 text-center">
+              <div class="py-6 space-y-4">
+                <i data-lucide="x-circle" class="w-12 h-12 text-rose-500 mx-auto"></i>
+                <h4 class="text-2xl font-bold text-white">Test Complete</h4>
+                <p class="text-sm text-slate-400">Maximum numbers recalled: <span class="font-bold text-amber-400 text-base">${level - 1}</span></p>
+                <div class="flex gap-3 justify-center">
+                  <button id="chimp-restart-btn" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-white text-sm">Try Again</button>
+                  <a href="#dashboard" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm">Exit</a>
+                </div>
+              </div>
+            </div>
+          `;
+          document.getElementById('chimp-restart-btn').onclick = () => {
+            strikes = 0;
+            level = 4;
+            startRound(4);
+          };
+        }
+        lucide.createIcons();
+      }
+
+      function startRound(numCount) {
+        const positions = new Set();
+        while (positions.size < numCount) {
+          positions.add(Math.floor(Math.random() * (GRID_SIZE * GRID_SIZE)));
+        }
+        const posArray = Array.from(positions);
+        grid = Array(GRID_SIZE * GRID_SIZE).fill(null);
+        posArray.forEach((pos, idx) => { grid[pos] = idx + 1; });
+        nextExpected = 1;
+        numbersHidden = false;
+        gameState = 'playing';
+        render();
+      }
+
+      function handleTileClick(val) {
+        if (gameState !== 'playing' || val === null) return;
+        if (nextExpected === 1) numbersHidden = true;
+
+        if (val === nextExpected) {
+          playSound('click');
+          if (val === level) {
+            playSound('correct');
+            saveHighScore('chimp', level);
+            level++;
+            startRound(level);
+          } else {
+            nextExpected++;
+            render();
+          }
+        } else {
+          playSound('wrong');
+          strikes++;
+          if (strikes >= 3) {
+            gameState = 'gameover';
+            if (onFinishCb) onFinishCb(level - 1);
+          } else {
+            gameState = 'failed';
+          }
+          render();
+        }
+      }
+
+      render();
+    }
+
+    // --- STREAMING_CHUNK:Implementing Matrix Pattern Memory Game Logic... ---
+    function mountMatrixGame(hostEl, onFinishCb) {
+      let level = 1;
+      let gridSize = 3;
+      let highlighted = [];
+      let userSelected = [];
+      let phase = 'ready'; // ready | display | input | success | failed | gameover
+      let strikes = 0;
+
+      function getTileCount(lvl) { return Math.min(12, 2 + Math.floor(lvl * 0.8)); }
+
+      function startLevel(lvl) {
+        gridSize = lvl <= 3 ? 3 : lvl <= 7 ? 4 : 5;
+        const count = getTileCount(lvl);
+        const tiles = new Set();
+        while (tiles.size < count) tiles.add(Math.floor(Math.random() * (gridSize * gridSize)));
+
+        highlighted = Array.from(tiles);
+        userSelected = [];
+        phase = 'display';
+        render();
+
+        setTimeout(() => {
+          phase = 'input';
+          render();
+        }, 1500);
+      }
+
+      function handleTileClick(idx) {
+        if (phase !== 'input' || userSelected.includes(idx)) return;
+        playSound('click');
+        userSelected.push(idx);
+
+        if (!highlighted.includes(idx)) {
+          playSound('wrong');
+          strikes++;
+          if (strikes >= 3) {
+            phase = 'gameover';
+            if (onFinishCb) onFinishCb(level);
+          } else {
+            phase = 'failed';
+          }
+          render();
+          return;
+        }
+
+        if (userSelected.length === highlighted.length) {
+          playSound('correct');
+          saveHighScore('matrix', level);
+          phase = 'success';
+          render();
+          setTimeout(() => {
+            level++;
+            startLevel(level);
+          }, 1000);
+        } else {
+          render();
+        }
+      }
+
+      function render() {
+        if (phase === 'ready') {
+          hostEl.innerHTML = `
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-6 text-center">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div>
+                  <h3 class="font-bold text-white text-lg flex items-center gap-2">
+                    <i data-lucide="grid" class="w-5 h-5 text-indigo-400"></i> Matrix Pattern
+                  </h3>
+                  <p class="text-xs text-slate-400">Memorize the illuminated grid cells.</p>
+                </div>
+                <div class="flex items-center gap-4 text-xs">
+                  <div><span class="text-slate-500 block">Level</span><span class="font-bold text-indigo-400 text-sm">${level}</span></div>
+                  <div><span class="text-slate-500 block">Strikes</span><span class="font-bold text-rose-400 text-sm">${strikes} / 3</span></div>
+                </div>
+              </div>
+              <div class="py-8 space-y-4">
+                <p class="text-slate-300 text-sm max-w-sm mx-auto">A pattern of cells will briefly flash blue. Tap all highlighted tiles from memory.</p>
+                <button id="matrix-start-btn" class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-white transition shadow-lg shadow-indigo-600/30">Begin Level ${level}</button>
+              </div>
+            </div>
+          `;
+          document.getElementById('matrix-start-btn').onclick = () => startLevel(level);
+        } else if (['display', 'input', 'success', 'failed'].includes(phase)) {
+          let gridHtml = Array.from({ length: gridSize * gridSize }).map((_, idx) => {
+            const isHighlighted = highlighted.includes(idx);
+            const isSelected = userSelected.includes(idx);
+            let bgClass = "bg-slate-900 hover:bg-slate-800 border-slate-800";
+            
+            if (phase === 'display' && isHighlighted) bgClass = "bg-indigo-500 shadow-lg shadow-indigo-500/50 scale-95";
+            else if (phase === 'input') {
+              if (isSelected && isHighlighted) bgClass = "bg-emerald-500 shadow-md shadow-emerald-500/30";
+              else if (isSelected && !isHighlighted) bgClass = "bg-rose-500 shadow-md shadow-rose-500/30";
+            } else if (phase === 'success' && isHighlighted) bgClass = "bg-emerald-500";
+            else if (phase === 'failed' && isHighlighted) bgClass = "bg-indigo-400/40";
+
+            return `<button data-idx="${idx}" ${phase !== 'input' ? 'disabled' : ''} class="matrix-tile rounded-xl border transition-all duration-200 aspect-square ${bgClass}"></button>`;
+          }).join('');
+
+          hostEl.innerHTML = `
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-6 text-center">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div>
+                  <h3 class="font-bold text-white text-lg flex items-center gap-2">
+                    <i data-lucide="grid" class="w-5 h-5 text-indigo-400"></i> Matrix Pattern
+                  </h3>
+                  <p class="text-xs text-slate-400">Memorize the illuminated grid cells.</p>
+                </div>
+                <div class="flex items-center gap-4 text-xs">
+                  <div><span class="text-slate-500 block">Level</span><span class="font-bold text-indigo-400 text-sm">${level}</span></div>
+                  <div><span class="text-slate-500 block">Strikes</span><span class="font-bold text-rose-400 text-sm">${strikes} / 3</span></div>
+                </div>
+              </div>
+              <div class="grid gap-2 max-w-xs mx-auto aspect-square p-2 bg-slate-950 rounded-2xl border border-slate-800" style="grid-template-columns: repeat(${gridSize}, minmax(0, 1fr));">${gridHtml}</div>
+              ${phase === 'failed' ? `
+                <div class="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl space-y-2">
+                  <p class="text-rose-300 text-xs font-semibold">Incorrect tile selected!</p>
+                  <button id="matrix-retry-btn" class="px-4 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-xs font-bold text-white">Retry Level ${level}</button>
+                </div>
+              ` : ''}
+            </div>
+          `;
+
+          document.querySelectorAll('.matrix-tile').forEach(btn => {
+            btn.onclick = () => handleTileClick(parseInt(btn.getAttribute('data-idx')));
+          });
+          if (document.getElementById('matrix-retry-btn')) {
+            document.getElementById('matrix-retry-btn').onclick = () => startLevel(level);
+          }
+        } else if (phase === 'gameover') {
+          hostEl.innerHTML = `
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-6 text-center">
+              <div class="py-6 space-y-4">
+                <i data-lucide="x-circle" class="w-12 h-12 text-rose-500 mx-auto"></i>
+                <h4 class="text-xl font-bold text-white">Test Complete</h4>
+                <p class="text-sm text-slate-400">Highest level achieved: <span class="font-bold text-indigo-400 text-base">${level}</span></p>
+                <div class="flex gap-3 justify-center">
+                  <button id="matrix-restart-btn" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-white text-sm">Try Again</button>
+                  <a href="#dashboard" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm">Exit</a>
+                </div>
+              </div>
+            </div>
+          `;
+          document.getElementById('matrix-restart-btn').onclick = () => {
+            strikes = 0;
+            level = 1;
+            startLevel(1);
+          };
+        }
+        lucide.createIcons();
+      }
+
+      render();
+    }
+
+    // --- STREAMING_CHUNK:Implementing Verbal Memory Game Logic... ---
+    function mountVerbalGame(hostEl, onFinishCb) {
+      let seenWords = [];
+      let currentWord = '';
+      let score = 0;
+      let lives = 3;
+      let gameState = 'ready'; // ready | playing | gameover
+
+      function nextWord() {
+        const chooseSeen = seenWords.length > 2 && Math.random() < 0.5;
+        if (chooseSeen) {
+          currentWord = seenWords[Math.floor(Math.random() * seenWords.length)];
+        } else {
+          const unseen = WORD_BANK.filter(w => !seenWords.includes(w));
+          currentWord = unseen.length > 0 ? unseen[Math.floor(Math.random() * unseen.length)] : WORD_BANK[Math.floor(Math.random() * WORD_BANK.length)];
+        }
+      }
+
+      function startGame() {
+        score = 0;
+        lives = 3;
+        seenWords = [];
+        gameState = 'playing';
+        currentWord = WORD_BANK[Math.floor(Math.random() * WORD_BANK.length)];
+        render();
+      }
+
+      function handleGuess(isSeenGuess) {
+        if (gameState !== 'playing') return;
+        const isActuallySeen = seenWords.includes(currentWord);
+
+        if (isSeenGuess === isActuallySeen) {
+          playSound('correct');
+          score++;
+          saveHighScore('verbal', score);
+          if (!isActuallySeen) seenWords.push(currentWord);
+          nextWord();
+        } else {
+          playSound('wrong');
+          lives--;
+          if (!isActuallySeen) seenWords.push(currentWord);
+          if (lives <= 0) {
+            gameState = 'gameover';
+            if (onFinishCb) onFinishCb(score);
+          } else {
+            nextWord();
+          }
+        }
+        render();
+      }
+
+      function render() {
+        if (gameState === 'ready') {
+          hostEl.innerHTML = `
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-6 text-center">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div>
+                  <h3 class="font-bold text-white text-lg flex items-center gap-2"><i data-lucide="type" class="w-5 h-5 text-emerald-400"></i> Verbal Memory</h3>
+                  <p class="text-xs text-slate-400">Track words you have seen vs new words.</p>
+                </div>
+                <div class="flex items-center gap-4 text-xs">
+                  <div><span class="text-slate-500 block">Score</span><span class="font-bold text-emerald-400 text-sm">${score}</span></div>
+                  <div><span class="text-slate-500 block">Lives</span><span class="font-bold text-rose-400 text-sm">${lives} / 3</span></div>
+                </div>
+              </div>
+              <div class="py-8 space-y-4">
+                <p class="text-slate-300 text-sm max-w-sm mx-auto">You will see words one at a time. Click <strong class="text-emerald-400">SEEN</strong> if the word appeared earlier in this session, or <strong class="text-indigo-400">NEW</strong> if it hasn't.</p>
+                <button id="verbal-start-btn" class="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-bold text-white transition shadow-lg shadow-emerald-600/30">Start Test</button>
+              </div>
+            </div>
+          `;
+          document.getElementById('verbal-start-btn').onclick = startGame;
+        } else if (gameState === 'playing') {
+          hostEl.innerHTML = `
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-6 text-center">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div>
+                  <h3 class="font-bold text-white text-lg flex items-center gap-2"><i data-lucide="type" class="w-5 h-5 text-emerald-400"></i> Verbal Memory</h3>
+                  <p class="text-xs text-slate-400">Track words you have seen vs new words.</p>
+                </div>
+                <div class="flex items-center gap-4 text-xs">
+                  <div><span class="text-slate-500 block">Score</span><span class="font-bold text-emerald-400 text-sm">${score}</span></div>
+                  <div><span class="text-slate-500 block">Lives</span><span class="font-bold text-rose-400 text-sm">${lives} / 3</span></div>
+                </div>
+              </div>
+              <div class="py-8 space-y-8">
+                <div class="py-8 bg-slate-950 rounded-2xl border border-slate-800">
+                  <span class="text-3xl sm:text-4xl font-extrabold text-white tracking-wide">${currentWord}</span>
+                </div>
+                <div class="flex gap-4 max-w-xs mx-auto">
+                  <button id="verbal-btn-seen" class="flex-1 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-extrabold text-white text-sm shadow-lg shadow-emerald-600/25 transition active:scale-95">SEEN</button>
+                  <button id="verbal-btn-new" class="flex-1 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-extrabold text-white text-sm shadow-lg shadow-indigo-600/25 transition active:scale-95">NEW</button>
+                </div>
+              </div>
+            </div>
+          `;
+          document.getElementById('verbal-btn-seen').onclick = () => handleGuess(true);
+          document.getElementById('verbal-btn-new').onclick = () => handleGuess(false);
+        } else if (gameState === 'gameover') {
+          hostEl.innerHTML = `
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-6 text-center">
+              <div class="py-6 space-y-4">
+                <i data-lucide="x-circle" class="w-12 h-12 text-rose-500 mx-auto"></i>
+                <h4 class="text-xl font-bold text-white">Test Complete</h4>
+                <p class="text-sm text-slate-400">Words correctly identified: <span class="font-bold text-emerald-400 text-base">${score}</span></p>
+                <div class="flex gap-3 justify-center">
+                  <button id="verbal-restart-btn" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-bold text-white text-sm">Try Again</button>
+                  <a href="#dashboard" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm">Exit</a>
+                </div>
+              </div>
+            </div>
+          `;
+          document.getElementById('verbal-restart-btn').onclick = startGame;
+        }
+        lucide.createIcons();
+      }
+
+      render();
+    }
+
+    // --- STREAMING_CHUNK:Implementing Digit Span Game Logic... ---
+    function mountDigitGame(hostEl, onFinishCb) {
+      let digitsLength = 4;
+      let sequence = '';
+      let phase = 'ready'; // ready | display | input | success | gameover
+      let reverseMode = false;
+      let strikes = 0;
+
+      function startRound(length) {
+        let seq = '';
+        for (let i = 0; i < length; i++) seq += Math.floor(Math.random() * 10).toString();
+        sequence = seq;
+        phase = 'display';
+        render();
+
+        setTimeout(() => {
+          phase = 'input';
+          render();
+        }, 1200 + length * 350);
+      }
+
+      function handleSubmit(val) {
+        const target = reverseMode ? sequence.split('').reverse().join('') : sequence;
+        if (val === target) {
+          playSound('correct');
+          saveHighScore('digit', digitsLength);
+          phase = 'success';
+          render();
+          setTimeout(() => {
+            digitsLength++;
+            startRound(digitsLength);
+          }, 1000);
+        } else {
+          playSound('wrong');
+          strikes++;
+          if (strikes >= 2) {
+            phase = 'gameover';
+            if (onFinishCb) onFinishCb(digitsLength - 1);
+          } else {
+            startRound(digitsLength);
+          }
+          render();
+        }
+      }
+
+      function render() {
+        if (phase === 'ready') {
+          hostEl.innerHTML = `
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-6 text-center">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div>
+                  <h3 class="font-bold text-white text-lg flex items-center gap-2"><i data-lucide="zap" class="w-5 h-5 text-cyan-400"></i> Digit Span Test</h3>
+                  <p class="text-xs text-slate-400">Short-term numerical working memory capacity.</p>
+                </div>
+                <div class="flex items-center gap-4 text-xs">
+                  <div><span class="text-slate-500 block">Length</span><span class="font-bold text-cyan-400 text-sm">${digitsLength}</span></div>
+                  <div><span class="text-slate-500 block">Strikes</span><span class="font-bold text-rose-400 text-sm">${strikes} / 2</span></div>
+                </div>
+              </div>
+              <div class="py-6 space-y-5">
+                <div class="flex justify-center gap-3">
+                  <button id="digit-mode-fwd" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition ${!reverseMode ? 'bg-cyan-500 text-slate-950' : 'bg-slate-800 text-slate-400'}">Forward Mode</button>
+                  <button id="digit-mode-rev" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition ${reverseMode ? 'bg-cyan-500 text-slate-950' : 'bg-slate-800 text-slate-400'}">Reverse Mode (Hard)</button>
+                </div>
+                <p class="text-slate-300 text-sm max-w-sm mx-auto">A string of numbers will appear. Remember them and type them back ${reverseMode ? '<strong class="text-cyan-400">IN REVERSE</strong>' : 'in exact order'}.</p>
+                <button id="digit-start-btn" class="px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 font-bold text-slate-950 transition shadow-lg shadow-cyan-500/20">Start Sequence</button>
+              </div>
+            </div>
+          `;
+          document.getElementById('digit-mode-fwd').onclick = () => { reverseMode = false; render(); };
+          document.getElementById('digit-mode-rev').onclick = () => { reverseMode = true; render(); };
+          document.getElementById('digit-start-btn').onclick = () => startRound(digitsLength);
+        } else if (phase === 'display') {
+          hostEl.innerHTML = `
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-6 text-center">
+              <div class="py-10 bg-slate-950 rounded-2xl border border-slate-800">
+                <div class="text-4xl sm:text-5xl font-black text-cyan-400 tracking-widest animate-pulse">${sequence}</div>
+                <p class="text-xs text-slate-500 mt-3">Memorize sequence...</p>
+              </div>
+            </div>
+          `;
+        } else if (phase === 'input') {
+          hostEl.innerHTML = `
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-6 text-center">
+              <form id="digit-form" class="py-6 space-y-4">
+                <input id="digit-input" type="number" placeholder="${reverseMode ? "Type digits BACKWARDS" : "Type digits"}" autofocus class="w-full text-center text-2xl font-bold bg-slate-950 border border-slate-700 rounded-xl py-3 text-white focus:outline-none focus:border-cyan-400" />
+                <button type="submit" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 font-bold text-slate-950 text-sm transition">Submit Response</button>
+              </form>
+            </div>
+          `;
+          const inputEl = document.getElementById('digit-input');
+          inputEl.focus();
+          document.getElementById('digit-form').onsubmit = (e) => {
+            e.preventDefault();
+            handleSubmit(inputEl.value.trim());
+          };
+        } else if (phase === 'success') {
+          hostEl.innerHTML = `
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-6 text-center">
+              <div class="py-6 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-emerald-400 font-bold text-sm">
+                Correct! Increasing sequence length...
+              </div>
+            </div>
+          `;
+        } else if (phase === 'gameover') {
+          hostEl.innerHTML = `
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-6 text-center">
+              <div class="py-6 space-y-4">
+                <i data-lucide="x-circle" class="w-12 h-12 text-rose-500 mx-auto"></i>
+                <h4 class="text-xl font-bold text-white">Test Complete</h4>
+                <p class="text-sm text-slate-400">Max digit span reached: <span class="font-bold text-cyan-400 text-base">${digitsLength - 1} digits</span></p>
+                <div class="flex gap-3 justify-center">
+                  <button id="digit-restart-btn" class="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 font-bold text-slate-950 text-sm">Try Again</button>
+                  <a href="#dashboard" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm">Exit</a>
+                </div>
+              </div>
+            </div>
+          `;
+          document.getElementById('digit-restart-btn').onclick = () => {
+            strikes = 0;
+            digitsLength = 4;
+            startRound(4);
+          };
+        }
+        lucide.createIcons();
+      }
+
+      render();
+    }
+
+    // --- STREAMING_CHUNK:Implementing Card Matching Game Logic... ---
+    function mountCardGame(hostEl) {
+      const SYMBOLS = ['🧠', '⚡', '🚀', '💎', '🎨', '🥑', '👑', '🎯'];
+      let cards = [];
+      let flippedIndices = [];
+      let matchedPairs = [];
+      let moves = 0;
+      let startTime = null;
+      let elapsed = 0;
+      let isWon = false;
+      let timerInterval = null;
+
+      function resetGame() {
+        const pairs = [...SYMBOLS, ...SYMBOLS];
+        for (let i = pairs.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [pairs[i], pairs[j]] = [pairs[j], pairs[i]];
+        }
+        cards = pairs;
+        flippedIndices = [];
+        matchedPairs = [];
+        moves = 0;
+        startTime = null;
+        elapsed = 0;
+        isWon = false;
+        if (timerInterval) clearInterval(timerInterval);
+        render();
+      }
+
+      function handleCardClick(idx) {
+        if (flippedIndices.length === 2 || flippedIndices.includes(idx) || matchedPairs.includes(idx)) return;
+
+        if (!startTime) {
+          startTime = Date.now();
+          timerInterval = setInterval(() => {
+            elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const timeEl = document.getElementById('card-timer');
+            if (timeEl) timeEl.textContent = `${elapsed}s`;
+          }, 1000);
+        }
+
+        playSound('click');
+        flippedIndices.push(idx);
+
+        if (flippedIndices.length === 2) {
+          moves++;
+          const [first, second] = flippedIndices;
+          if (cards[first] === cards[second]) {
+            playSound('correct');
+            matchedPairs.push(first, second);
+            flippedIndices = [];
+            if (matchedPairs.length === cards.length) {
+              isWon = true;
+              clearInterval(timerInterval);
+              playSound('win');
+              const score = Math.max(10, Math.round(10000 / (elapsed + moves * 3 + 1)));
+              saveHighScore('cards', score);
+            }
+          } else {
+            setTimeout(() => {
+              flippedIndices = [];
+              render();
+            }, 900);
+          }
+        }
+        render();
+      }
+
+      function render() {
+        let cardsHtml = cards.map((symbol, idx) => {
+          const isFlipped = flippedIndices.includes(idx) || matchedPairs.includes(idx);
+          const isMatched = matchedPairs.includes(idx);
+          let bgClass = "bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:scale-95";
+          if (isFlipped) {
+            bgClass = isMatched 
+              ? "bg-emerald-500/20 border-2 border-emerald-500/40 opacity-80" 
+              : "bg-indigo-600 border border-indigo-400 shadow-lg scale-105";
+          }
+          return `<button data-idx="${idx}" class="card-btn aspect-square rounded-2xl text-2xl sm:text-3xl font-bold flex items-center justify-center transition-all duration-300 transform ${bgClass}">${isFlipped ? symbol : ''}</button>`;
+        }).join('');
+
+        hostEl.innerHTML = `
+          <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-6 text-center">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+              <div>
+                <h3 class="font-bold text-white text-lg flex items-center gap-2"><i data-lucide="layers" class="w-5 h-5 text-pink-400"></i> Card Pair Match</h3>
+                <p class="text-xs text-slate-400">Spatial visual matching efficiency.</p>
+              </div>
+              <div class="flex items-center gap-4 text-xs">
+                <div><span class="text-slate-500 block">Moves</span><span class="font-bold text-pink-400 text-sm">${moves}</span></div>
+                <div><span class="text-slate-500 block">Time</span><span id="card-timer" class="font-bold text-slate-200 text-sm">${elapsed}s</span></div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-4 gap-3 max-w-md mx-auto">${cardsHtml}</div>
+
+            ${isWon ? `
+              <div class="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl space-y-3">
+                <i data-lucide="trophy" class="w-8 h-8 text-amber-400 mx-auto"></i>
+                <h4 class="text-lg font-bold text-white">Grid Cleared!</h4>
+                <p class="text-xs text-slate-300">Completed in <strong class="text-emerald-400">${moves} moves</strong> and <strong class="text-emerald-400">${elapsed} seconds</strong>.</p>
+                <div class="flex justify-center gap-3">
+                  <button id="card-replay-btn" class="px-5 py-2 rounded-xl bg-pink-600 hover:bg-pink-500 font-bold text-white text-xs">Play Again</button>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+
+        document.querySelectorAll('.card-btn').forEach(btn => {
+          btn.onclick = () => handleCardClick(parseInt(btn.getAttribute('data-idx')));
+        });
+        if (document.getElementById('card-replay-btn')) {
+          document.getElementById('card-replay-btn').onclick = resetGame;
+        }
+        lucide.createIcons();
+      }
+
+      resetGame();
+    }
+
+    // --- STREAMING_CHUNK:Implementing Route Game Router & Full Assessment Runner... ---
+    function mountGame(gameKey) {
+      const mountPoint = document.getElementById('game-mount-point');
+      if (gameKey === 'chimp') mountChimpGame(mountPoint);
+      else if (gameKey === 'matrix') mountMatrixGame(mountPoint);
+      else if (gameKey === 'verbal') mountVerbalGame(mountPoint);
+      else if (gameKey === 'digit') mountDigitGame(mountPoint);
+      else if (gameKey === 'cards') mountCardGame(mountPoint);
+    }
+
+    // ASSESSMENT BATTERY FLOW
+    let assessmentScores = { matrix: 0, verbal: 0, digit: 0 };
+    function initAssessmentView() {
+      const intro = document.getElementById('assessment-intro');
+      const activeArea = document.getElementById('assessment-active-area');
+      const results = document.getElementById('assessment-results');
+
+      intro.classList.remove('hidden');
+      activeArea.classList.add('hidden');
+      results.classList.add('hidden');
+
+      document.getElementById('btn-start-assessment').onclick = () => startAssessmentPhase(1);
+      document.getElementById('btn-retake-assessment').onclick = () => startAssessmentPhase(1);
+    }
+
+    function startAssessmentPhase(step) {
+      const intro = document.getElementById('assessment-intro');
+      const activeArea = document.getElementById('assessment-active-area');
+      const results = document.getElementById('assessment-results');
+      const host = document.getElementById('assessment-game-host');
+      const stepLabel = document.getElementById('assessment-step-label');
+
+      intro.classList.add('hidden');
+      results.classList.add('hidden');
+      activeArea.classList.remove('hidden');
+
+      if (step === 1) {
+        stepLabel.textContent = "Step 1 of 3: Matrix Pattern";
+        stepLabel.className = "font-bold text-indigo-400";
+        mountMatrixGame(host, (score) => {
+          assessmentScores.matrix = score;
+          startAssessmentPhase(2);
+        });
+      } else if (step === 2) {
+        stepLabel.textContent = "Step 2 of 3: Verbal Memory";
+        stepLabel.className = "font-bold text-emerald-400";
+        mountVerbalGame(host, (score) => {
+          assessmentScores.verbal = score;
+          startAssessmentPhase(3);
+        });
+      } else if (step === 3) {
+        stepLabel.textContent = "Step 3 of 3: Digit Span";
+        stepLabel.className = "font-bold text-cyan-400";
+        mountDigitGame(host, (score) => {
+          assessmentScores.digit = score;
+          finishAssessment();
+        });
+      }
+    }
+
+    function finishAssessment() {
+      const activeArea = document.getElementById('assessment-active-area');
+      const results = document.getElementById('assessment-results');
+      activeArea.classList.add('hidden');
+      results.classList.remove('hidden');
+
+      const matrixNorm = Math.min(100, Math.round((assessmentScores.matrix / 12) * 100));
+      const verbalNorm = Math.min(100, Math.round((assessmentScores.verbal / 40) * 100));
+      const digitNorm = Math.min(100, Math.round((assessmentScores.digit / 10) * 100));
+      const overallIndex = Math.round((matrixNorm * 0.35) + (verbalNorm * 0.35) + (digitNorm * 0.30) * 10);
+      const estimatedAge = Math.max(20, Math.min(75, Math.round(70 - (overallIndex / 20))));
+
+      saveHighScore('batteryIndex', overallIndex);
+      playSound('win');
+
+      document.getElementById('res-overall-index').textContent = overallIndex;
+      document.getElementById('res-brain-age').textContent = `${estimatedAge} years`;
+
+      document.getElementById('res-matrix-score').textContent = `${assessmentScores.matrix} / 12 lvl`;
+      document.getElementById('res-matrix-bar').style.width = `${matrixNorm}%`;
+
+      document.getElementById('res-verbal-score').textContent = `${assessmentScores.verbal} / 40 pts`;
+      document.getElementById('res-verbal-bar').style.width = `${verbalNorm}%`;
+
+      document.getElementById('res-digit-score').textContent = `${assessmentScores.digit} / 10 digits`;
+      document.getElementById('res-digit-bar').style.width = `${digitNorm}%`;
+    }
+
+    // --- INITIALIZATION ---
+    window.addEventListener('DOMContentLoaded', () => {
+      loadHighScores();
+      handleRouting();
+      window.addEventListener('hashchange', handleRouting);
+
+      // Audio Toggle Button
+      document.getElementById('audio-toggle-btn').onclick = () => {
+        soundEnabled = !soundEnabled;
+        const icon = document.getElementById('audio-icon');
+        if (soundEnabled) {
+          icon.setAttribute('data-lucide', 'volume-2');
+          icon.className = 'w-5 h-5 text-indigo-400';
+        } else {
+          icon.setAttribute('data-lucide', 'volume-x');
+          icon.className = 'w-5 h-5 text-slate-500';
+        }
+        lucide.createIcons();
+      };
+    });
+  </script>
+</body>
+</html>
